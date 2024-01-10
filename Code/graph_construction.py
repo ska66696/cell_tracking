@@ -74,9 +74,9 @@ class GRAPH():
 
         for t in triangleList:
              
-            pt1 = (t[0], t[1])
-            pt2 = (t[2], t[3])
-            pt3 = (t[4], t[5])
+            pt1 = (int(t[0]), int(t[1]))
+            pt2 = (int(t[2]), int(t[3]))
+            pt3 = (int(t[4]), int(t[5]))
              
             if self.rect_contains(r, pt1) and self.rect_contains(r, pt2) and self.rect_contains(r, pt3):
                 
@@ -124,7 +124,7 @@ class GRAPH():
             img = self.mark.copy()
             img[img!=i] = 0
             if img.sum():
-                _, contours,hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_KCOS)
+                contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_KCOS)
                 m = cv2.moments(contours[0])
 
                 if m['m00']:
@@ -175,14 +175,15 @@ class GRAPH():
             if animate:
                 img_copy = img_orig.copy()
                 # Draw delaunay triangles
-                self.draw_delaunay( img_copy, subdiv, (255, 255, 255) );
+                self.draw_delaunay( img_copy, subdiv, (255, 255, 255) )
                 outimg.append(img_copy)
                 cv2.imshow("win_delaunay", img_copy)
                 cv2.waitKey(50)
 
-        imageio.mimsave('graph_contruction.gif', outimg, duration=0.3)
+        if len(outimg) != 0:
+            imageio.mimsave('graph_contruction.gif', outimg, duration=0.3)
         # Draw delaunay triangles
-        slope_length = self.draw_delaunay( img_orig, subdiv, (255, 255, 255) );
+        slope_length = self.draw_delaunay( img_orig, subdiv, (255, 255, 255) )
      
         # Draw points
         for p in points :

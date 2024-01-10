@@ -135,7 +135,7 @@ class GVF():
 				if not inbounds(self.thresh[index].shape, (p0[0], p0[1])) or count > looplimit:
 					outbound = True
 					if count > looplimit:
-						print("  count > looplimit...")
+						print( "  count > looplimit...")
 					break
 
 			if not outbound:
