@@ -2,8 +2,6 @@
 This file is to compute watershed given the seed image in the gvf.py. 
 
 '''
-import sys
-
 import cv2
 import numpy as np
 from numpy import unique
@@ -34,15 +32,16 @@ class WATERSHED():
 		for i in range(len(self.images)):
 			# generate a 3-channel image in order to use cv2.watershed
 			imgcolor = np.zeros((self.images[i].shape[0], self.images[i].shape[1], 3), np.uint8)
-			for c in range(3):
+			for c in range(3): 
 				imgcolor[:,:,c] = self.images[i]
 
 			# compute marker image (labelling)
 			if len(self.markers[i].shape) == 3:
 				self.markers[i] = cv2.cvtColor(self.markers[i],cv2.COLOR_BGR2GRAY)
 			_, mark = cv2.connectedComponents(self.markers[i])
-			mark = self.markers[i].astype(np.int32)
+			# mark = self.markers[i].astype(np.int32)
 			# watershed!
+			#print(imgcolor.shape, mark.shape)
 			mark = cv2.watershed(imgcolor, mark)
 
 			u, counts = unique(mark, return_counts=True)
@@ -84,7 +83,7 @@ def main():
 	markers.append(cv2.cvtColor(marker, cv2.COLOR_BGR2GRAY))
 
 	# watershed
-	ws = WATERSHED(newimg, imgpair)
+	ws = WS(newimg, imgpair) 
 	wsimage, binarymark, mark = ws.watershed_compute()
 
 	cv2.imwrite('binarymark.tif', (np.clip(binarymark, 0, 255)).astype(np.uint8))

@@ -27,8 +27,8 @@ from gvf import GVF
 from matplotlib import pyplot as plt
 from watershed import WATERSHED as WS
 from graph_construction import GRAPH
-from matching import FEAVECTOR
-from matching import SIMPLE_MATCH
+from matching import FEAVECTOR as FEA
+from matching import SIMPLE_MATCH as MAT
 
 def normalize(image):
     '''
@@ -55,7 +55,7 @@ def normalize(image):
 # "resource/training/GT_02"
 # The testing set locates at "resource/testing/01" and "resource/testing/02"
 
-path=os.path.join("resource/training/01")
+path = os.path.join("resource/training/01")
 for r,d,f in os.walk(path):
     images = []
     enhance_images = []
@@ -105,38 +105,42 @@ def main():
     os.chdir(os.pardir)
 
     # watershed
-    ws = WS(newimg, imgpair) 
-    wsimage, binarymark, mark = ws.watershed_compute()
+    print("test watershed")
+    ws = WS(newimg, imgpairs) 
+    wsimage, binarymark, marks = ws.watershed_compute()
 
     centroid = []
     slope_length = []
     # Build Delaunay Triangulation
+    print("test triangulation")
     for i in range(len(images)):
-        graph = GRAPH(mark, binarymark, i)
+        graph = GRAPH(marks, binarymark, i)
         tempcentroid, tempslope_length = graph.run(True)
         centroid.append(tempcentroid)
         slope_length.append(tempslope_length)
 
     # Build the Dissimilarity measure vector
+    print("test dissimilarity")
     vector = []
     for i in range(len(images)):
         print("  feature vector: image ", i)
-        v = FEAVECTOR()
+        v = FEA()
         v.set_centroid(centroid[i])
         v.set_spatial(slope_length[i])
-        v.set_shape(images[i], markers[i])
+        v.set_shape(images[i], marks[i])
         v.set_histogram()
         v.add_label()
-        v.add_id(markers[i].max(), i)
+        v.add_id(marks[i].max(), i)
         vector.append(v.generate_vector())
         
         print("num of nuclei: ", len(vector[i]))
 
     # Feature matching
+    mask = []
     for i in range(len(images)-1):
         print("  Feature matching: image ", i)
-        m = SIMPLE_MATCH(i,i+1,[images[i], images[i+1]], vector)
-        mask.append(m.generate_mask(markers[i], i)) 
+        m = MAT(i,i+1,[images[i], images[i+1]], vector)
+        mask.append(m.generate_mask(marks[i], i)) 
         m.find_match(0.3)
         mask = m.match_missing(mask, max_frame=2, max_distance=20)
         vector[i+1] = m.mitosis_refine()
