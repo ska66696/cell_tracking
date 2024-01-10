@@ -269,7 +269,7 @@ class SIMPLE_MATCH():
 		return dist
 
 	def phase_identify(self, pv1, min_times_MA2ma = 2):
-			_, contours, hierarchy = cv2.findContours(pv1.s[0].astype(np.uint8), 1, 2)
+			contours, hierarchy = cv2.findContours(pv1.s[0].astype(np.uint8), 1, 2)
 			if not len(contours):
 				return 1
 			cnt = contours[0]
@@ -305,7 +305,7 @@ class SIMPLE_MATCH():
 					dist[count][2] = pv0.id
 					count += 1
 			sort_dist = sorted(dist, key=lambda a_entry: a_entry[0]) 
-			if sort_dist[0][0] < max_distance:
+			if len(sort_dist) != 0 and len(sort_dist[0]) != 0 and sort_dist[0][0] < max_distance:
 				self.v1[i].l = sort_dist[0][1]
 				self.v1[i].id = sort_dist[0][2]
 
@@ -476,10 +476,12 @@ class SIMPLE_MATCH():
 		def find_max_id(vectors):
 			max_id = 0
 			for vector in vectors:
-				for pt in vector:
-					if pt.id > max_id:
-						max_id = pt.id 
+				if vector is not None and len(vector) != 0:
+					for pt in vector:
+						if pt.id > max_id:
+							max_id = pt.id 
 			return max_id
+
 		max_id = find_max_id(self.vs)
 		max_id += 1
 		for i, pv1 in enumerate(self.v1):
