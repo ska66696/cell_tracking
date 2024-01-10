@@ -153,9 +153,9 @@ def main():
         write_image(imgpair_raw, 'imgpair_raw', i)
         write_image(threh[i].astype(np.uint8)*255, 'threh', i)
         write_image(enhance_images[i], 'normalize', i)
-        write_image(mark[i].astype(np.uint8), 'mark', i)
+        write_image(marks[i].astype(np.uint8), 'marks', i)
         write_image(binarymark[i].astype(np.uint8), 'binarymark', i)
-        write_image(tempimg[i].astype(np.uint8), 'tempimg', i)
+        write_image(newimg[i].astype(np.uint8), 'newimg', i)
         write_image(dismap[i].astype(np.uint8), 'dismap', i)
     os.chdir(os.pardir)
 
